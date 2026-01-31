@@ -1,0 +1,32 @@
+# Alternative: Custom GROBID build if needed
+# By default, we use the official lfoppiano/grobid image in docker-compose
+# This file is provided for custom GROBID configurations
+
+FROM openjdk:11-jre-slim
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set GROBID version
+ENV GROBID_VERSION=0.7.3
+
+# Download and extract GROBID
+WORKDIR /opt
+RUN wget https://github.com/kermitt2/grobid/archive/${GROBID_VERSION}.zip && \
+    unzip ${GROBID_VERSION}.zip && \
+    mv grobid-${GROBID_VERSION} grobid && \
+    rm ${GROBID_VERSION}.zip
+
+# Build GROBID (if building from source)
+WORKDIR /opt/grobid
+# RUN ./gradlew clean install
+
+# Expose GROBID port
+EXPOSE 8070
+
+# Start GROBID service
+CMD ["./gradlew", "run"]

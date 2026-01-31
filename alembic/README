@@ -1,0 +1,45 @@
+ScholarGenie Database Migrations
+=================================
+
+This directory contains Alembic database migrations for ScholarGenie.
+
+## Commands
+
+### Create a new migration
+```bash
+alembic revision --autogenerate -m "Description of changes"
+```
+
+### Apply migrations
+```bash
+alembic upgrade head
+```
+
+### Downgrade migration
+```bash
+alembic downgrade -1
+```
+
+### View migration history
+```bash
+alembic history
+```
+
+### View current version
+```bash
+alembic current
+```
+
+## Environment Variables
+
+Set DATABASE_URL environment variable:
+```bash
+export DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+```
+
+## Initial Setup
+
+1. Install PostgreSQL
+2. Create database: `createdb scholargenie`
+3. Set environment variable
+4. Run migrations: `alembic upgrade head`

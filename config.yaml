@@ -1,0 +1,588 @@
+# ScholarGenie Configuration File
+
+# Summarization Settings
+summarization:
+  # Model options:
+  # - google/long-t5-tglobal-base (recommended for CPU, 220M params)
+  # - google/long-t5-tglobal-large (better quality, 770M params, needs GPU)
+  # - google/long-t5-local-base (fast, 220M params)
+  # - google/pegasus-large (1.2B params, GPU recommended)
+  model_name: "google/long-t5-tglobal-base"
+  device: "cpu"  # "cuda" for GPU, "cpu" for CPU
+  max_input_length: 4096  # Max tokens for input
+  max_output_length: 512  # Max tokens for summary
+  min_output_length: 100
+  batch_size: 1
+  num_beams: 4
+  temperature: 1.0
+
+  # Multi-granularity settings
+  tldr_max_length: 50
+  section_summary_max_length: 200
+  full_summary_max_length: 512
+  keypoints_count: 12
+
+# Embedding Settings
+embedding:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cpu"
+  chunk_size: 512  # tokens per chunk
+  chunk_overlap: 50
+
+# Vector Store Settings
+vector_store:
+  type: "chroma"  # "chroma" or "faiss"
+  persist_directory: "./data/chroma_db"
+  collection_name: "papers"
+  distance_metric: "cosine"
+
+# PDF Parsing Settings
+pdf_parser:
+  primary: "grobid"  # "grobid" or "pymupdf"
+  fallback: "pymupdf"
+  grobid_timeout: 60  # seconds
+  extract_figures: true
+  extract_tables: true
+  extract_references: true
+
+# Paper Discovery Settings
+paper_finder:
+  max_results: 20
+  sources:
+    - arxiv
+    - semantic_scholar
+  prefer_open_access: true
+  min_year: 2015
+
+# API Configuration
+apis:
+  grobid:
+    url: "${GROBID_URL:http://localhost:8070}"
+    timeout: 60
+
+  semantic_scholar:
+    api_key: "${SEMANTIC_SCHOLAR_API_KEY:}"
+    base_url: "https://api.semanticscholar.org/graph/v1"
+    fields: "paperId,title,authors,year,abstract,citationCount,openAccessPdf,venue,publicationDate"
+
+  arxiv:
+    base_url: "http://export.arxiv.org/api/query"
+    max_results_per_request: 100
+
+  unpaywall:
+    base_url: "https://api.unpaywall.org/v2"
+    email: "${UNPAYWALL_EMAIL:}"
+
+# Rate Limiting (requests per second)
+rate_limits:
+  arxiv: 3
+  semantic_scholar: 10
+  unpaywall: 10
+  grobid: 5
+
+# Presentation Generation
+presentation:
+  template: "default"
+  max_slides: 20
+  include_references: true
+  max_references: 10
+  figure_quality: "medium"  # low, medium, high
+
+# Report Generation
+report:
+  format: "markdown"  # markdown, pdf
+  include_toc: true
+  include_metadata: true
+  include_figures: true
+
+# Evaluation Settings
+evaluation:
+  metrics:
+    - rouge
+    - bertscore
+  rouge_types:
+    - rouge1
+    - rouge2
+    - rougeL
+  bertscore_model: "microsoft/deberta-base-mnli"
+
+# Storage Settings
+storage:
+  data_dir: "./data"
+  cache_dir: "./cache"
+  output_dir: "./outputs"
+  max_cache_size_gb: 10
+
+# Logging
+logging:
+  level: "${LOG_LEVEL:INFO}"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/scholargenie.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Performance
+performance:
+  num_workers: 4
+  max_concurrent_requests: 10
+  timeout: 300  # seconds
+
+# Knowledge Graph Settings
+knowledge_graph:
+  enabled: true
+  persist_path: "./data/knowledge_graph.graphml"
+  entity_extraction:
+    model_patterns: true  # Use regex patterns for model extraction
+    dataset_patterns: true
+    metric_patterns: true
+    task_patterns: true
+    method_patterns: true
+  relationship_detection:
+    citation_based: true  # Extract from citations
+    co_occurrence: true  # Extract from co-occurrence
+    temporal: true  # Extract from temporal patterns
+  visualization:
+    max_nodes: 500  # For UI display
+    layout: "spring"  # spring, circular, hierarchical
+    color_by: "type"  # type, year, centrality
+
+# Gap Discovery Settings
+gap_discovery:
+  enabled: true
+  algorithms:
+    missing_links: true
+    isolated_clusters: true
+    bridge_opportunities: true
+    semantic_gaps: true
+    emerging_trends: true
+    underexplored_combinations: true
+  thresholds:
+    min_common_neighbors: 3
+    isolation_score: 0.6
+    betweenness_threshold: 0.01
+    semantic_similarity_eps: 0.3
+    min_cluster_size: 3
+  top_k_gaps: 20
+
+# GraphRAG Settings
+graph_rag:
+  enabled: true
+  retrieval_methods:
+    - vector
+    - graph
+    - hybrid
+  default_method: "hybrid"
+  expansion_depth: 2
+  reranking: true
+  vector_weight: 0.6  # For hybrid retrieval
+  graph_weight: 0.4
+
+# Link Prediction Settings
+link_prediction:
+  enabled: true
+  algorithm: "node2vec"  # node2vec, graphsage, or both
+  node2vec:
+    dimensions: 64
+    walk_length: 30
+    num_walks: 10
+    p: 1.0  # Return parameter
+    q: 1.0  # In-out parameter
+  graphsage:
+    hidden_dims: [128, 64]
+    num_layers: 2
+    dropout: 0.2
+  classifier: "random_forest"
+  top_k_predictions: 20
+
+# Causal Reasoning Settings
+causal_reasoning:
+  enabled: true
+  causal_discovery:
+    methods:
+      - temporal  # From citations and temporal order
+      - intervention  # From experimental results
+      - statistical  # From correlations
+  causal_graph:
+    min_edge_strength: 0.5
+    min_confidence: 0.6
+  breakthrough_prediction:
+    enable_chain_discovery: true
+    enable_intervention_analysis: true
+    enable_synergy_detection: true
+    enable_emerging_patterns: true
+    max_chain_length: 3
+    top_k_breakthroughs: 10
+
+# LLM Reasoning Settings
+llm_reasoning:
+  enabled: true
+  validation:
+    novelty_threshold: 0.5
+    impact_threshold: 0.4
+    feasibility_threshold: 0.3
+  explanation_style: "detailed"  # concise, detailed, technical
+  max_recommendations: 5
+
+# Hypothesis Tree Settings
+hypothesis_tree:
+  enabled: true
+  max_depth: 3
+  max_breadth: 3
+  generate_sub_hypotheses:
+    mechanism: true
+    moderator: true
+    boundary_conditions: true
+  experiment_design:
+    include_pilot: true
+    include_main: true
+    include_replication: true
+
+# Research Gap Report Settings
+gap_report:
+  enabled: true
+  formats:
+    - markdown
+    - html
+  sections:
+    - executive_summary
+    - knowledge_graph_overview
+    - discovered_gaps
+    - validated_gaps
+    - breakthrough_opportunities
+    - strategic_recommendations
+    - research_agenda
+    - next_steps
+  visualizations:
+    - gap_distribution
+    - impact_chart
+    - timeline_chart
+  max_gaps_per_section: 10
+
+# Citation Network Analysis Settings
+citation_network:
+  enabled: true
+
+  # Network construction
+  min_papers_required: 2
+  include_co_citation: true
+  include_bibliographic_coupling: true
+  co_citation_threshold: 2  # Min common citers
+  coupling_threshold: 2  # Min common references
+
+  # Metrics computation
+  compute_pagerank: true
+  pagerank_alpha: 0.85
+  compute_betweenness: true
+  compute_closeness: true
+  compute_eigenvector: true
+
+  # Paper categorization thresholds (percentiles)
+  foundational_pagerank_percentile: 90
+  hidden_gem_betweenness_percentile: 90
+  high_citation_percentile: 75
+  emerging_star_velocity_percentile: 85
+  recent_paper_months: 12
+
+  # Community detection
+  community_method: "louvain"  # "louvain", "label_propagation", "greedy_modularity"
+
+  # Citation impact prediction
+  prediction:
+    decay_factor: 0.8  # Citation velocity decay over time
+    pagerank_multiplier: 10.0
+    min_age_for_confidence: 6  # months
+
+  # Research lineage
+  max_lineage_generations: 5
+  min_descendants_for_branch: 3
+
+  # Anomaly detection
+  anomalies:
+    citation_burst_threshold_std: 2.0  # Standard deviations
+    delayed_recognition_years: 5
+    delayed_recognition_velocity: 2.0
+
+  # Export settings
+  export_formats:
+    - json
+    - graphml
+    - gexf
+  max_community_papers_display: 20
+
+# Live Research Alerts & Monitoring Settings
+research_monitoring:
+  enabled: true
+
+  # Alert sources
+  sources:
+    arxiv:
+      enabled: true
+      check_interval_hours: 24
+      max_results_per_check: 50
+    pubmed:
+      enabled: false
+      check_interval_hours: 24
+    semantic_scholar:
+      enabled: false
+      check_interval_hours: 24
+
+  # Alert matching
+  default_relevance_threshold: 0.7
+  max_alerts_per_user_per_day: 100
+
+  # Trend detection
+  trend_detection:
+    enabled: true
+    time_window_days: 30
+    min_papers_for_trend: 5
+    growth_rate_threshold: 0.5  # Papers per week
+
+  # Competitor monitoring
+  competitor_monitoring:
+    enabled: true
+    threat_level_thresholds:
+      high: 0.8  # Overlap score
+      medium: 0.5
+      low: 0.3
+
+  # Notifications
+  notifications:
+    email: false  # Requires email service setup
+    webhook: true
+    in_app: true
+
+  # Performance
+  cache_seen_papers_days: 30
+  max_stored_alerts: 10000
+
+# Literature Review Generator Settings
+literature_review:
+  enabled: true
+
+  # Review styles
+  default_style: "narrative"  # narrative, systematic, meta_analysis, scoping, integrative
+  allowed_styles:
+    - narrative
+    - systematic
+    - meta_analysis
+    - scoping
+    - integrative
+
+  # Citation styles
+  default_citation_style: "apa"  # apa, mla, chicago, ieee, harvard
+  allowed_citation_styles:
+    - apa
+    - mla
+    - chicago
+    - ieee
+    - harvard
+
+  # Content generation
+  min_papers_required: 2
+  min_papers_per_theme: 3
+  max_themes_in_review: 10
+  max_papers_per_theme_section: 10
+
+  # Word count limits
+  abstract_max_words: 250
+  introduction_target_words: 500
+  methodology_target_words: 300
+  body_section_target_words: 500
+  discussion_target_words: 400
+  conclusion_target_words: 300
+  future_work_target_words: 300
+
+  # Sections to include
+  default_sections:
+    include_abstract: true
+    include_introduction: true
+    include_methodology: true
+    include_body: true
+    include_discussion: true
+    include_conclusion: true
+    include_future_work: true
+    include_bibliography: true
+
+  # Export formats
+  export_formats:
+    - markdown
+    - latex
+    - json
+    - docx  # Future support
+
+  # Theme detection
+  theme_detection:
+    method: "keyword_frequency"  # keyword_frequency, topic_modeling, clustering
+    min_keyword_frequency: 3
+    max_keywords_per_paper: 10
+
+
+# =====================================================
+# Research Funding & Grant Matcher Configuration
+# =====================================================
+grant_matcher:
+  enabled: true
+
+  # Matching algorithm parameters
+  matching:
+    min_match_score: 0.3  # Minimum score (0-1) for a grant to be considered a match
+
+    # Scoring weights (must sum to 1.0)
+    weights:
+      keywords: 0.4      # 40% weight on keyword matching
+      topics: 0.3        # 30% weight on topic alignment
+      discipline: 0.2    # 20% weight on discipline fit
+      funding: 0.1       # 10% weight on funding feasibility
+
+    # Funding feasibility thresholds
+    funding_thresholds:
+      optimal_max: 5000000      # Grants under $5M are considered optimal
+      challenging_min: 20000000  # Grants over $20M are challenging
+
+  # Grant database
+  grant_sources:
+    - nsf          # National Science Foundation
+    - nih          # National Institutes of Health
+    - darpa        # Defense Advanced Research Projects Agency
+    - doe          # Department of Energy
+    - eu_horizon   # EU Horizon Europe
+    - google       # Google Research
+    - microsoft    # Microsoft Research
+
+  # Deadline urgency levels (in days)
+  urgency_levels:
+    urgent: 30     # < 30 days: urgent
+    high: 60       # < 60 days: high priority
+    medium: 90     # < 90 days: medium priority
+    low: 180       # < 180 days: low priority
+
+  # Proposal generation
+  proposal_generator:
+    default_duration_years: 3
+
+    # Word count targets for each section
+    word_counts:
+      project_summary: 250
+      introduction: 500
+      background: 800
+      methodology: 1000
+      timeline: 400
+      budget_justification: 600
+      broader_impacts: 500
+
+    # Budget templates by funding amount
+    budget_templates:
+      small:   # < $500K
+        personnel: 0.5
+        equipment: 0.2
+        materials: 0.15
+        travel: 0.1
+        other: 0.05
+      medium:  # $500K - $2M
+        personnel: 0.45
+        equipment: 0.25
+        materials: 0.15
+        travel: 0.08
+        other: 0.07
+      large:   # > $2M
+        personnel: 0.4
+        equipment: 0.3
+        materials: 0.15
+        travel: 0.08
+        other: 0.07
+
+  # Email notifications
+  notifications:
+    enabled: false  # Enable when email service is configured
+    notify_on_new_grants: true
+    notify_before_deadline_days: 14
+
+
+# =====================================================
+# Cross-Domain Knowledge Transfer Configuration
+# =====================================================
+domain_transfer:
+  enabled: true
+
+  # Available scientific domains
+  domains:
+    - computer_science
+    - biology
+    - physics
+    - chemistry
+    - neuroscience
+    - economics
+    - engineering
+    - mathematics
+
+  # Analogical reasoning parameters
+  analogy_finding:
+    min_confidence_score: 0.5  # Minimum confidence for a transfer to be suggested
+    max_transfers_per_query: 10
+
+    # Similarity thresholds
+    similarity:
+      keyword_overlap_min: 0.3      # Minimum keyword overlap
+      problem_type_weight: 0.4      # Weight for problem type matching
+      concept_mapping_weight: 0.3   # Weight for concept mapping strength
+      historical_precedent_weight: 0.3  # Weight for historical success
+
+  # Concept mapping
+  concept_mapping:
+    min_mapping_strength: 0.5  # Minimum strength for a concept mapping to be used
+    mapping_types:
+      - direct         # 1-to-1 direct mapping
+      - analogical     # Analogical mapping
+      - metaphorical   # Metaphorical mapping
+      - structural     # Structural similarity
+
+  # Problem classification
+  problem_types:
+    - optimization
+    - search
+    - learning
+    - classification
+    - prediction
+    - control
+    - communication
+    - coordination
+
+  # Research proposal generation
+  proposal_generator:
+    enabled: true
+
+    # Proposal sections
+    sections:
+      - abstract
+      - introduction
+      - background
+      - methodology
+      - expected_outcomes
+      - timeline
+      - budget
+      - references
+
+    # Default parameters
+    default_duration_months: 36
+    default_budget: 500000
+
+    # Word count targets
+    word_counts:
+      abstract: 250
+      introduction: 800
+      background: 1200
+      methodology: 1500
+      expected_outcomes: 600
+      timeline: 400
+      budget_justification: 500
+
+  # Historical transfer database
+  historical_transfers:
+    enabled: true
+    include_failed_transfers: false  # Whether to include unsuccessful transfer attempts
+
+  # Validation
+  validation:
+    require_source_papers: true   # Require papers supporting the source domain solution
+    require_concept_mappings: true # Require explicit concept mappings
+    min_implementation_steps: 3   # Minimum implementation steps required

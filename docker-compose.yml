@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # GROBID service for PDF parsing
+  grobid:
+    image: lfoppiano/grobid:0.7.3
+    container_name: scholargenie-grobid
+    ports:
+      - "8070:8070"
+    environment:
+      - GROBID_OPTS=-Xmx4g
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8070/api/isalive"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
+    restart: unless-stopped
+
+  # Backend API service
+  backend:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+    container_name: scholargenie-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GROBID_URL=http://grobid:8070
+      - DEVICE=${DEVICE:-cpu}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+    depends_on:
+      grobid:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # Streamlit demo UI
+  demo:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+    container_name: scholargenie-demo
+    command: streamlit run demo/streamlit_app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  data:
+  outputs:
+  logs:
+  cache:
+
+networks:
+  default:
+    name: scholargenie-network
