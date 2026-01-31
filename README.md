@@ -2,7 +2,6 @@
 
 **ScholarGenie** is a multi-agent system that autonomously discovers scientific papers, parses and ingests them, extracts key insights, stores searchable knowledge, and generates presentation-ready slides and reports.
 
-[![CI](https://github.com/yourusername/ScholarGenie/workflows/CI/badge.svg)](https://github.com/yourusername/ScholarGenie/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -23,7 +22,7 @@
 
 ```bash
 # 1. Clone and configure
-git clone https://github.com/yourusername/ScholarGenie.git
+git clone https://github.com/Aadhityan-Senthil/ScholarGenie.git
 cd ScholarGenie
 cp .env.example .env
 # Edit .env with your API keys (optional for arXiv, recommended for Semantic Scholar)
@@ -332,10 +331,11 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ```bibtex
 @software{scholargenie2025,
-  title={ScholarGenie: Multi-Agent System for Scientific Paper Analysis},
-  author={ScholarGenie Contributors},
+  title={ScholarGenie: AI-Powered Research Intelligence Platform},
+  author={Aadhityan Senthil and Gnanamoorthi P V and J Gold Beulah Patturose and R Priscilla},
   year={2025},
-  url={https://github.com/yourusername/ScholarGenie}
+  url={https://github.com/Aadhityan-Senthil/ScholarGenie},
+  institution={St. Joseph's Institute of Technology, Chennai}
 }
 ```
 
