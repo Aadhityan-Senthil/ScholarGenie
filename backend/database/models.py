@@ -112,7 +112,7 @@ class Paper(Base):
     source: Mapped[Optional[str]] = mapped_column(String(50))
     citation_count: Mapped[int] = mapped_column(Integer, default=0)
     is_open_access: Mapped[bool] = mapped_column(Boolean, default=False)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB)
+    paper_metadata: Mapped[Optional[dict]] = mapped_column(JSONB)
     ingested_by: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -311,7 +311,7 @@ class TaskLog(Base):
     task_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), index=True)
     level: Mapped[Optional[str]] = mapped_column(String(20))
     message: Mapped[Optional[str]] = mapped_column(Text)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB)
+    log_metadata: Mapped[Optional[dict]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -331,7 +331,7 @@ class UsageAnalytics(Base):
     action: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     resource_type: Mapped[Optional[str]] = mapped_column(String(50))
     resource_id: Mapped[Optional[str]] = mapped_column(String(255))
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB)
+    analytics_metadata: Mapped[Optional[dict]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
 
     # Relationships

@@ -113,12 +113,14 @@ class ResearchAlert:
     abstract: str
     published_date: datetime
     source: AlertSource
-    pdf_url: Optional[str] = None
-    arxiv_id: Optional[str] = None
 
-    # Matching details
+    # Matching details (required fields before optional)
     match_type: AlertType
     relevance_score: float
+
+    # Optional paper details
+    pdf_url: Optional[str] = None
+    arxiv_id: Optional[str] = None
     matched_keywords: List[str] = field(default_factory=list)
     matched_authors: List[str] = field(default_factory=list)
     reason: str = ""

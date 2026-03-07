@@ -1,4 +1,48 @@
-# ScholarGenie - How to Run
+# How to Run ScholarGenie - UPDATED
+
+## ✅ Current Status
+- Backend API: **RUNNING** at http://localhost:8000
+- Virtual environment: **READY**
+- Models: **Local (free, no OpenAI needed)**
+
+---
+
+## 🚀 Two Ways to Use ScholarGenie
+
+### Option 1: CLI (Command Line) ⚡ FASTEST
+
+Open Command Prompt:
+```cmd
+cd C:\Users\aadhi\Desktop\Projects\ScholarGenie
+test_cli.bat
+```
+
+### Option 2: Web UI (Streamlit) 🎨 VISUAL
+
+Open Command Prompt:
+```cmd
+cd C:\Users\aadhi\Desktop\Projects\ScholarGenie
+start_streamlit.bat
+```
+Then visit: **http://localhost:8501**
+
+---
+
+## 💡 Try This Right Now
+
+**Analyze the famous "Attention Is All You Need" paper:**
+
+```cmd
+cd C:\Users\aadhi\Desktop\Projects\ScholarGenie
+venv\Scripts\activate
+
+python scripts\scholargenie-cli.py ingest --arxiv-id 1706.03762 --index
+python scripts\scholargenie-cli.py generate-pptx --arxiv-id 1706.03762 --output presentation.pptx
+```
+
+This creates a PowerPoint presentation automatically!
+
+---
 
 ## ✅ Pre-Flight Checklist
 

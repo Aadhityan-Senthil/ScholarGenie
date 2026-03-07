@@ -86,8 +86,8 @@ class Workspace:
     """Collaborative workspace"""
     workspace_id: str
     name: str
-    description: Optional[str] = None
     owner_id: str
+    description: Optional[str] = None
 
     # Members
     members: Dict[str, WorkspaceMember] = field(default_factory=dict)
@@ -172,10 +172,10 @@ class Task:
     task_id: str
     workspace_id: str
     title: str
+    created_by: str
     description: Optional[str] = None
 
     # Assignment
-    created_by: str
     assigned_to: Optional[str] = None
     assigned_to_username: Optional[str] = None
 

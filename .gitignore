@@ -117,3 +117,9 @@ out/
 .git/
 *.swp
 *.swo
+
+# Claude Code memory
+.claude/
+
+# Windows artifacts
+nul
