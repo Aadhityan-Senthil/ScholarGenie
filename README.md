@@ -318,12 +318,6 @@ ScholarGenie/
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md)
-
----
-
 ## 📝 License
 
 MIT License - See [LICENSE](LICENSE)
